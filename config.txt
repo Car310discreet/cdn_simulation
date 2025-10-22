@@ -1,0 +1,35 @@
+# ---------------------------------
+# CDN Simulator Configuration File
+# ---------------------------------
+# Format: NODE <TYPE> <ID> [CACHE_CAPACITY]
+# Format: EDGE <NODE1_ID> <NODE2_ID> <LATENCY_MS>
+# ---------------------------------
+
+# --- NODES ---
+# The single source of truth for all content
+NODE ORIGIN 1
+
+# Edge servers with cache capacity
+NODE SERVER 10 5  # "East Coast" Server (Cache size 5)
+NODE SERVER 20 3  # "West Coast" Server (Cache size 3)
+
+# Gateways (user connection points)
+NODE GATEWAY 100  # "East Coast" Gateway
+NODE GATEWAY 200  # "West Coast" Gateway
+
+
+# --- EDGES ---
+# Connect servers to the origin (high latency "backhaul")
+EDGE 10 1 100     # Server 10 -> Origin
+EDGE 20 1 120     # Server 20 -> Origin
+
+# Connect gateways to their local servers (low latency)
+EDGE 100 10 10    # Gateway 100 -> Server 10 (fast local link)
+EDGE 200 20 15    # Gateway 200 -> Server 20 (fast local link)
+
+# Connect the two gateways (high latency "cross-country" link)
+EDGE 100 200 70
+
+# Add a slower, alternate path from the East gateway to the West server
+# This makes the pathfinding more interesting.
+EDGE 100 20 90    # Gateway 100 -> Server 20 (direct, but slow)
