@@ -19,8 +19,8 @@ The network topology (servers, gateways, and latencies/costs) is loaded from an 
 
 The project is split into three main modules:
 
-* **`lru_cache.h` / `lru_cache.cpp`**: A self-contained, high-performance LRU Cache implementation using `std::list` and `std::unordered_map` for O(1) get and put operations.
-* **`cdn_simulator.h` / `cdn_simulator.cpp`**: The core logic. This module defines the `Node` and `CDNSimulator` classes, manages the graph, runs Dijkstra's and Prim's algorithms, and handles the simulation workflow.
+* **`lru_cache.hpp` / `lru_cache.cpp`**: A self-contained, high-performance LRU Cache implementation using `std::list` and `std::unordered_map` for O(1) get and put operations.
+* **`cdn_sim.hpp` / `cdn_sim.cpp`**: The core logic. This module defines the `Node` and `CDNSimulator` classes, manages the graph, runs Dijkstra's and Prim's algorithms, and handles the simulation workflow.
 * **`main.cpp`**: The application entry point. This file is responsible for parsing the `config.txt` file and running the interactive CLI.
 * **`config.txt`**: The input file that defines the initial network of servers and gateways.
 
@@ -33,9 +33,9 @@ You'll need a C++ compiler like `g++`.
 1.  **Compile the Project:**
     Open your terminal and run the following command to compile all the source files into a single executable named `cdn_sim`:
     ```bash
-    g++ main.cpp cdn_simulator.cpp lru_cache.cpp -o cdn_sim
+    g++ main.cpp cdnSim/cdn_sim.cpp lruCache/lru_cache.cpp -o cdn_sim
     ```
-    *Note: On some systems, you may need to add the `-std=c++17` flag if your compiler defaults to an older standard.*
+    
 
 2.  **Run the Simulator:**
     Once compiled, run the program:
