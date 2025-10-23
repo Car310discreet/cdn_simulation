@@ -1,14 +1,15 @@
 # CDN Simulator in C++
 
-This project is a C++ simulation of a basic Content Delivery Network (CDN). It demonstrates how pathfinding algorithms (like Dijkstra's) and caching mechanisms (like LRU) work together to efficiently deliver content to users across a network.
+This project is a C++ simulation of a Content Delivery Network (CDN). It demonstrates how graph algorithms (like Dijkstra's and Prim's) and caching mechanisms (like LRU) work together to efficiently design and operate a content delivery system.
 
-The network topology (servers, gateways, and latencies) is loaded from an external file, and new users can be added dynamically through a command-line interface.
+The network topology (servers, gateways, and latencies/costs) is loaded from an external file, and new users can be added dynamically through a command-line interface.
 
 ## Features
 
 * **Graph-Based Network**: The network is modeled as an undirected graph where nodes can be users, edge servers, gateways, or an origin server.
-* **Dijkstra's Algorithm**: Used to find the lowest-latency path from a user to the nearest edge server.
-* **LRU Caching**: Each edge server is equipped with a an LRU (Least Recently Used) cache to store content.
+* **Minimum Spanning Tree (MST)**: Includes **Prim's algorithm** to calculate the cheapest cost to build the network's backbone by connecting all servers and gateways.
+* **Dijkstra's Algorithm**: Used to find the lowest-latency path from a user to the nearest available edge server during operation.
+* **LRU Caching**: Each edge server is equipped with an LRU (Least Recently Used) cache to store content and reduce redundant fetches from the origin.
 * **Dynamic Simulation**: The simulation runs in real-time via a simple Command-Line Interface (CLI).
 * **Configurable**: The entire base network is loaded from a `config.txt` file, making it easy to test different topologies.
 
@@ -19,7 +20,7 @@ The network topology (servers, gateways, and latencies) is loaded from an extern
 The project is split into three main modules:
 
 * **`lru_cache.h` / `lru_cache.cpp`**: A self-contained, high-performance LRU Cache implementation using `std::list` and `std::unordered_map` for O(1) get and put operations.
-* **`cdn_simulator.h` / `cdn_simulator.cpp`**: The core logic. This module defines the `Node` and `CDNSimulator` classes, manages the graph, runs Dijkstra's algorithm, and handles the simulation workflow.
+* **`cdn_simulator.h` / `cdn_simulator.cpp`**: The core logic. This module defines the `Node` and `CDNSimulator` classes, manages the graph, runs Dijkstra's and Prim's algorithms, and handles the simulation workflow.
 * **`main.cpp`**: The application entry point. This file is responsible for parsing the `config.txt` file and running the interactive CLI.
 * **`config.txt`**: The input file that defines the initial network of servers and gateways.
 
@@ -27,7 +28,7 @@ The project is split into three main modules:
 
 ## How to Compile and Run
 
-You will need a C++ compiler like `g++`.
+You'll need a C++ compiler like `g++`.
 
 1.  **Compile the Project:**
     Open your terminal and run the following command to compile all the source files into a single executable named `cdn_sim`:
@@ -71,13 +72,13 @@ NODE GATEWAY 100
 ```
 
 ### `EDGE`
-Defines an undirected edge (a two-way connection) between two nodes with a given latency.
+Defines an undirected edge (a two-way connection) between two nodes. This edge's weight is used as **latency** for Dijkstra's and **cost** for the MST.
 ```
-EDGE <NODE1_ID> <NODE2_ID> <LATENCY_MS>
+EDGE <NODE1_ID> <NODE2_ID> <WEIGHT>
 ```
 **Example:**
 ```
-# Connects Gateway 100 to Server 10 with 15ms latency
+# Connects Gateway 100 to Server 10 with a weight of 15
 EDGE 100 10 15
 ```
 
@@ -86,6 +87,9 @@ EDGE 100 10 15
 ## CLI Commands
 
 Once the simulator is running, you can use the following commands:
+
+* **`mst`**
+    Calculates and prints the Minimum Spanning Tree (cost) to connect all backbone nodes (servers and gateways).
 
 * **`addUser <newUserID> <connectToNodeID> <latency>`**
     Adds a new user to the simulation and connects them to an existing node in the network.
@@ -106,13 +110,30 @@ Once the simulator is running, you can use the following commands:
 * **`exit`**
     Quits the simulator.
 
-## Example Session
+## Example Sessions
 
+### Calculating Network Design Cost
 ```bash
 $ ./cdn_sim
 Initial network configuration loaded from config.txt.
 
 CDN Simulator CLI. Type 'help' for commands.
+> mst
+--- Calculating Network Backbone MST (Prim's Algorithm) ---
+MST Calculation Complete.
+Total Backbone Nodes: 5
+Edges in MST: 4
+Total Cost: 215
+Edges:
+  (1 <--> 10) Cost: 100
+  (10 <--> 100) Cost: 10
+  (100 <--> 200) Cost: 70
+  (200 <--> 20) Cost: 15
+----------------------------------------
+```
+
+### Simulating User Requests
+```bash
 > addUser 1001 100 5
 User 1001 added and connected to 100.
 > request 1001 cool_video.mp4
