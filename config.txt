@@ -10,8 +10,8 @@
 NODE ORIGIN 1
 
 # Edge servers with cache capacity
-NODE SERVER 10 5  # "East Coast" Server (Cache size 5)
-NODE SERVER 20 3  # "West Coast" Server (Cache size 3)
+NODE SERVER 10 2  # "East Coast" Server (Cache size 5)
+NODE SERVER 20 1  # "West Coast" Server (Cache size 3)
 
 # Gateways (user connection points)
 NODE GATEWAY 100  # "East Coast" Gateway

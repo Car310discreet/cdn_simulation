@@ -1,4 +1,5 @@
 #include "./lru_cache.hpp"
+#include<string>
 #include<iostream>
 using namespace std;
 
@@ -18,14 +19,14 @@ string LRUCache :: get(int key){
     return it->second->second;
 }
 
-void LRUCache :: put(int key, const string &s){
+void LRUCache :: put(int key, const string &value){
     if(capacity_<=0) return;
 
     auto it = map_.find(key);
     //item found, move to front and update value
     if(it!=map_.end()){
         items_.splice(items_.begin(),items_,it->second);
-        it->second->second = s;
+        it->second->second = value;
         return;
     }
 
@@ -35,7 +36,7 @@ void LRUCache :: put(int key, const string &s){
         items_.pop_back();
         map_.erase(key_remove);
     }
-    items_.push_front({key,s});
+    items_.push_front({key,value});
     map_[key] = items_.begin();
     return;
 }
